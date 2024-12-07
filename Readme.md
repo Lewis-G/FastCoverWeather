@@ -1,5 +1,8 @@
 # FastCoverWeather
 
+LLM Declaration:
+As requested, I will specify that I used ChatGPT for the 4th commit, to generate the initial code for the 4th commit HomePage.jsx, NavBar.jsx, and CityPage.jsx files. This is also declared in the commit message.
+
 Steps to view the UI:
 1. Git clone this repository
 2. Run 'npm run dev' in the ;FastCoverWeather.Frontend' directory
