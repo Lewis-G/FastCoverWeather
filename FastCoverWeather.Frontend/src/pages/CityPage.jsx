@@ -7,7 +7,6 @@ const CityPage = () => {
     <div className="container mt-4">
       <h2>Weather Details for {cityName}</h2>
       <p>This page will display weather information for {cityName}.</p>
-      {/* Placeholder for weather data */}
     </div>
   );
 };

@@ -1,18 +1,40 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
 import CityPage from './pages/CityPage';
 
 function App() {
+  const [myCities, setMyCities] = useState([]);
+
+  const addCity = (city) => {
+    let i = 0;
+    while (i < myCities.length){
+      if (myCities[i] == city){
+        i++;
+        return;
+      }
+    }
+    setMyCities((prevCities) => [...prevCities, city]);
+  };
+
   return (
     <Router>
-      <div>
-        {/* Common Navigation Bar */}
+      <div
+        style={{
+          backgroundImage: "url(/src/assets/bright-blue-sky-dotted-with-fluffy-white-clouds.jpg)", // Image path from assets folder
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          minHeight: "100vh",
+        }}
+      >
         <NavBar />
 
-        {/* Routes */}
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route 
+            path="/" 
+            element={<HomePage myCities={myCities} addCity={addCity} />} 
+          />
           <Route path="/city/:cityName" element={<CityPage />} />
         </Routes>
       </div>
