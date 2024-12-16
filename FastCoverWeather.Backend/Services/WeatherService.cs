@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using FastCoverWeather.Backend.DTOs;
+using FastCoverWeather.Backend.Models;
 
 namespace FastCoverWeather.Backend.Services
 {
     public interface IWeatherService
     {
         Task<string> SendRequest(double latitude, double longitude);
-
+        Task<(OpenMeteoDataDTO? Data, string? ErrorMessage)> GetWeatherAsync(string city);
     }
 
     public class WeatherService : IWeatherService
@@ -34,10 +37,42 @@ namespace FastCoverWeather.Backend.Services
             var content = await response.Content.ReadAsStringAsync();
             if (string.IsNullOrEmpty(content))
             {
-                return "Received empty or null response content.";
+                return "Received empty or null response content";
             } else
             {
                 return content;
+            }
+        }
+
+        public async Task<(OpenMeteoDataDTO? Data, string? ErrorMessage)> GetWeatherAsync(string city)
+        {
+            if (!CityCoordinates.Coordinates.ContainsKey(city)){
+                return (null, "Input does not match any cities in the system");
+            }
+            
+            var coordinates = CityCoordinates.Coordinates[city];
+
+            var httpResponse = await this.SendRequest(coordinates.Latitude, coordinates.Longitude);
+            
+            if (httpResponse == "Received empty or null response content")
+            {
+                return (null, "Received empty or null response content");
+            }
+
+            try
+            {
+                var responseObject = JsonSerializer.Deserialize<OpenMeteoDataDTO>(httpResponse);
+                return (responseObject, null);
+
+            }
+            catch (JsonException ex)
+            {
+                return (null, $"Deserialization error: {ex.Message}");
+
+            }
+            catch (Exception ex)
+            {
+                return (null, $"An unexpected error occurred: {ex.Message}");
             }
         }
     }

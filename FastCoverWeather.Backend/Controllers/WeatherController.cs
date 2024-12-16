@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FastCoverWeather.Backend.Models;
 
 namespace FastCoverWeather.Backend.Controllers
 {
@@ -23,8 +24,16 @@ namespace FastCoverWeather.Backend.Controllers
         [HttpGet]
         public async Task<ActionResult> GetWeather([FromQuery] string city)
         {
-            var results = await _weatherService.SendRequest(52.52, 13.41);
-            return Ok(results);
+            var (data, error) = await _weatherService.GetWeatherAsync(city);
+            if (data != null)
+            {
+                return Ok(data);
+            }
+            else
+            {
+                return BadRequest(error);
+            }
+            
         }
 
     }
