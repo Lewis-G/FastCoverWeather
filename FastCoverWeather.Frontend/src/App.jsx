@@ -11,9 +11,9 @@ function App() {
     let i = 0;
     while (i < myCities.length){
       if (myCities[i] == city){
-        i++;
         return;
       }
+      i++;
     }
     setMyCities((prevCities) => [...prevCities, city]);
   };

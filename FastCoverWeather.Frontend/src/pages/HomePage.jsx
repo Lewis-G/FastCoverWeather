@@ -1,74 +1,51 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import Select from 'react-select';
 import citiesData from '../data/cities.json';
 
 const HomePage = ({ myCities, addCity }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-
-  const handleSearch = (event) => {
-    const query = event.target.value;
-    setSearchQuery(query);
-
-    if (query) {
-      const filteredCities = citiesData.cities.filter(city =>
-        city.name.toLowerCase().startsWith(query.toLowerCase())
-      );
-      setSuggestions(filteredCities);
-    } else {
-      setSuggestions([]);
-    }
-  };
+  const [selectedCity, setSelectedCity] = useState(null);
 
   const handleCitySelect = (city) => {
-    setSearchQuery(city.name);
-    setSuggestions([]);
-  };
+    setSelectedCity(city);
 
-  const handleAddCity = () => {
-    if (searchQuery && !myCities.some(city => city.name === searchQuery)) {
-        addCity(searchQuery);
+    if (city && !myCities.includes(city.value)) {
+      addCity(city.value);
     }
-    setSearchQuery('');
   };
 
   return (
     <div className="container">
-      <h1 style={{ color: 'lightblue' }}>Weather App</h1>
+      <h1 style={{ color: 'lightblue', marginTop: '30px', marginBottom: '30px' }}>
+        Weather App
+      </h1>
 
       <div className="input-group mb-3">
-        <input
-          type="text"
-          className="form-control"
+        <Select
+          value={selectedCity}
+          onChange={handleCitySelect}
+          options={citiesData.cities.map(city => ({ value: city, label: city }))}
           placeholder="Search for a city"
-          value={searchQuery}
-          onChange={handleSearch}
+          getOptionLabel={(e) => e.label}
+          getOptionValue={(e) => e.value}
         />
-        <button className="btn btn-primary" onClick={handleAddCity}>Add</button>
       </div>
-
-      {suggestions.length > 0 && (
-        <ul className="list-group">
-          {suggestions.map((city) => (
-            <li
-              key={city.name}
-              className="list-group-item list-group-item-action"
-              onClick={() => handleCitySelect(city)}
-            >
-              {city.name}
-            </li>
-          ))}
-        </ul>
-      )}
 
       {myCities.length > 0 && (
         <div>
           <h3>My Cities</h3>
-          <ul>
+          <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
             {myCities.map((city, index) => (
-              <li key={index}>{city.name}</li>
+              <div className="col" key={index}>
+                <div className="card text-center shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title">{city}</h5>
+                    <p className="card-text">Additional info here</p> {/* You can add more info here */}
+                  </div>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </div>
